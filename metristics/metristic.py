@@ -4,6 +4,7 @@ from math import sqrt
 class METRICSTICS(IMetrics):
     def __init__(self, data):
         self.data = sorted(data)
+        self.session_data = {'data': self.data}
 
     def mean(self):
         return sum(self.data) / len(self.data)
