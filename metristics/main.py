@@ -72,6 +72,8 @@ def load_session(session_file="sessions.json"):
         # Load the data from the file specified in the session info
         with open(session_info['file_location'], "r") as file:
             session_data = json.load(file)
+            for i in session_data:
+                print(i,": ", session_data[i])
             # Assuming METRICSTICS class is expecting a list of numbers
             metrics = METRICSTICS(session_data['data'])  
             return metrics
