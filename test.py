@@ -4,7 +4,6 @@ from metristic import METRICSTICS
 class TestMETRICSTICS(unittest.TestCase):
 
     def setUp(self):
-        # Create test data for each test case
         self.data = [1, 2, 3, 4, 5]
         self.metrics = METRICSTICS(self.data)
 

@@ -166,7 +166,6 @@ class METRICSTICS:
             case _:
                 print("Wrong Input.")
 
-
 def random():
     a = 1664525
     c = 1013904223
