@@ -4,8 +4,12 @@ class METRICSTICS:
 
     
     def __init__(self, data):
-        self.data = self._sort(data)
-        self.session_data = {'data': self.data}
+        try:
+            self.data = self._sort(data)
+            self.session_data = {'data': self.data}
+        except TypeError:
+            return "Invalid data type!"
+        
 
     def _sort(self, data):
         flag = False
@@ -39,12 +43,19 @@ class METRICSTICS:
         return count
     
     def mean(self):
-        return self._sum(self.data) / self._length(self.data)
+        mean = 0
+        try:
+            mean = self._sum(self.data) / self._length(self.data)
+        except (ZeroDivisionError, UnboundLocalError):
+            mean = 0
+        return mean
 
     def median(self):
         n = self._length(self.data)
         if n % 2 == 1:
             return self.data[n // 2]
+        elif n == 0:
+            return None
         else:
             return (self.data[n // 2 - 1] + self.data[n // 2]) / 2
 
@@ -65,22 +76,36 @@ class METRICSTICS:
         return modes
 
     def standard_deviation(self):
-        mu = self.mean()
-        variance = self._sum([(x - mu) ** 2 for x in self.data]) / self._length(self.data)
-        return self._sqrt(variance)
+        sd = 0
+        try:
+            mu = self.mean()
+            variance = self._sum([(x - mu) ** 2 for x in self.data]) / self._length(self.data)
+            sd = self._sqrt(variance)
+        except ZeroDivisionError:
+            sd = 0
+        return sd
 
     def _sqrt(self, num):
         return num ** 0.5
 
     def mad(self):
-        mu = self.mean()
-        return self._sum([self._abs(x - mu) for x in self.data]) / self._length(self.data)
+        mad = 0
+        try:
+            mu = self.mean()
+            mad = self._sum([self._abs(x - mu) for x in self.data]) / self._length(self.data)
+        except ZeroDivisionError:
+            mad = 0
+        return mad
 
     def _abs(self, num):
         return num if num >= 0 else -num
 
     def min_max(self):
-        return self.data[0], self.data[-1]
+        n = self._length(self.data)
+        if n == 0:
+            return (None, None)
+        else:
+            return self.data[0], self.data[-1]
     
     def save_session(self, filename="session_data.json"):
         with open(filename, "w") as file:
@@ -141,7 +166,6 @@ class METRICSTICS:
             case _:
                 print("Wrong Input.")
 
-
 def random():
     a = 1664525
     c = 1013904223
@@ -166,17 +190,23 @@ if __name__ == "__main__":
         METRICSTICS.menu()
         
     else:
-        print("Please select how you want to input the data")
-        print("1. Auto generate 10000 values")
-        print("2. Input comma seperated data using command line")
+        data_menu = "Please select how you want to input the data\n 1. Auto generate 10000 values\n 2. Input comma seperated data using command line"
+        print(data_menu)
         input_type = int(input())
         if(input_type == 1):
             test_data = generate_test_data()
             print(test_data)
             metrics = METRICSTICS(test_data)
         elif(input_type == 2):
-            input_list = [int(x) for x in input().split(',')]
-            metrics = METRICSTICS(input_list)
+            try:
+                input_list = [int(x) for x in input().split(',')]
+                while(len(input_list) < 2) :
+                    print("Please provide at least two numbers.")
+                    input_list = [int(x) for x in input().split(',')]
+                metrics = METRICSTICS(input_list)
+            except ValueError:
+                print("Invalid data input.")
+                quit() 
 
         METRICSTICS.menu()
 
